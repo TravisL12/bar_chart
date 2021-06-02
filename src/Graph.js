@@ -2,9 +2,12 @@ import * as d3 from 'd3';
 import React, { useRef, useEffect } from 'react';
 import { data } from './data';
 
+const mainWidth = 800;
+const mainHeight = 400;
+
 const margin = { top: 10, right: 30, bottom: 20, left: 50 };
-const width = 460 - margin.left - margin.right;
-const height = 400 - margin.top - margin.bottom;
+const width = mainWidth - margin.left - margin.right;
+const height = mainHeight - margin.top - margin.bottom;
 
 function StackedBarChart() {
   const ref = useRef();
@@ -27,7 +30,7 @@ function StackedBarChart() {
     svg
       .append('g')
       .attr('transform', `translate(0, ${height})`)
-      .call(d3.axisBottom(x).tickSizeOuter(0));
+      .call(d3.axisBottom(x));
 
     // Add Y axis
     const y = d3.scaleLinear().domain([0, 60]).range([height, 0]);
@@ -66,11 +69,11 @@ function StackedBarChart() {
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
     draw();
   }, [data, draw]);
 
-  return <svg width={'600'} height={'400'} ref={ref}></svg>;
+  return <svg width={mainWidth} height={mainHeight} ref={ref}></svg>;
 }
 
 export default StackedBarChart;
