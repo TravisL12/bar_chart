@@ -13,36 +13,34 @@ function StackedBarChart() {
     if (ref.current) {
       d3.select(ref.current).selectAll('*').remove();
     }
-    var subgroups = Object.keys(data[0]).slice(1);
 
     const svg = d3.select(ref.current);
 
+    // List of subgroups = header of the csv files = soil condition here
+    var subgroups = Object.keys(data[0]).slice(1);
+
     // List of groups = species here = value of the first column called group -> I show them on the X axis
-    var groups = d3
-      .map(data, function (d) {
-        return d.time;
-      })
-      .keys();
+    const groups = data.map((d) => d.time);
 
     // Add X axis
-    var x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
+    const x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
     svg
       .append('g')
-      .attr('transform', 'translate(0,' + height + ')')
+      .attr('transform', `translate(0, ${height})`)
       .call(d3.axisBottom(x).tickSizeOuter(0));
 
     // Add Y axis
-    var y = d3.scaleLinear().domain([0, 60]).range([height, 0]);
+    const y = d3.scaleLinear().domain([0, 60]).range([height, 0]);
     svg.append('g').call(d3.axisLeft(y));
 
     // color palette = one color per subgroup
-    var color = d3
+    const color = d3
       .scaleOrdinal()
       .domain(subgroups)
       .range(['#e41a1c', '#377eb8', '#4daf4a']);
 
     //stack the data? --> stack per subgroup
-    var stackedData = d3.stack().keys(subgroups)(data);
+    const stackedData = d3.stack().keys(subgroups)(data);
 
     // Show the bars
     svg
@@ -50,27 +48,15 @@ function StackedBarChart() {
       .selectAll('g')
       // Enter in the stack data = loop key per key = group per group
       .data(stackedData)
-      .enter()
-      .append('g')
-      .attr('fill', function (d) {
-        return color(d.key);
-      })
+      .join('g')
+      .attr('fill', (d) => color(d.key))
       .selectAll('rect')
       // enter a second time = loop subgroup per subgroup to add all rectangles
-      .data(function (d) {
-        return d;
-      })
-      .enter()
-      .append('rect')
-      .attr('x', function (d) {
-        return x(d.data.time);
-      })
-      .attr('y', function (d) {
-        return y(d[1]);
-      })
-      .attr('height', function (d) {
-        return y(d[0]) - y(d[1]);
-      })
+      .data((d) => d)
+      .join('rect')
+      .attr('x', (d) => x(d.data.time))
+      .attr('y', (d) => y(d[1]))
+      .attr('height', (d) => y(d[0]) - y(d[1]))
       .attr('width', x.bandwidth());
   };
 
