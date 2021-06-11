@@ -11,8 +11,10 @@ const height = mainHeight - margin.top - margin.bottom;
 const rectWidth = 50;
 
 function SingleBarChart({ data }) {
+  const ref = useRef();
+
   const draw = useCallback(() => {
-    d3.select('#chart')
+    d3.select(ref.current)
       .selectAll('rect')
       .data(data)
       .attr('x', (_, i) => i * rectWidth)
@@ -29,7 +31,7 @@ function SingleBarChart({ data }) {
   }, [data, draw]);
 
   return (
-    <svg width={rectWidth * data.length} height={mainHeight} id="chart">
+    <svg width={rectWidth * data.length} height={mainHeight} ref={ref}>
       {data.map((val, idx) => (
         <rect key={`${val}-${idx}`} />
       ))}
