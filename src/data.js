@@ -14,3 +14,11 @@ export const getData = (count = 20) => {
   }
   return data;
 };
+
+export const getSingleData = (count = 20) => {
+  const data = [];
+  for (let i = 0; i < count; i++) {
+    data.push(randomizer(10));
+  }
+  return data;
+};
