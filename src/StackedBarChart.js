@@ -25,22 +25,18 @@ function StackedBarChart({ data }) {
     const groups = data.map((d) => d.time);
 
     // Add X axis
-    const xAxis = d3
-      .scaleBand()
-      .domain(groups)
-      .range([0, width])
-      .padding([0.2]);
+    const x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
     svg
       .append('g')
       .attr('transform', `translate(${margin.left}, ${height})`)
-      .call(d3.axisBottom(xAxis));
+      .call(d3.axisBottom(x));
 
     // Add Y axis
-    const yAxis = d3.scaleLinear().domain([0, 60]).range([height, 0]);
+    const y = d3.scaleLinear().domain([0, 60]).range([height, 0]);
     svg
       .append('g')
       .attr('transform', `translate(${margin.left})`)
-      .call(d3.axisLeft(yAxis));
+      .call(d3.axisLeft(y));
 
     // color palette = one color per subgroup
     const color = d3
@@ -63,11 +59,11 @@ function StackedBarChart({ data }) {
       // enter a second time = loop subgroup per subgroup to add all rectangles
       .data((d) => d)
       .join('rect')
-      .attr('x', (d) => xAxis(d.data.time))
+      .attr('x', (d) => x(d.data.time))
       .attr('transform', `translate(${margin.left})`)
-      .attr('y', (d) => yAxis(d[1]))
-      .attr('height', (d) => yAxis(d[0]) - yAxis(d[1]))
-      .attr('width', xAxis.bandwidth());
+      .attr('y', (d) => y(d[1]))
+      .attr('height', (d) => y(d[0]) - y(d[1]))
+      .attr('width', x.bandwidth());
   }, [data]);
 
   useEffect(() => {

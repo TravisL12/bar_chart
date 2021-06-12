@@ -7,9 +7,9 @@ export const getData = (count = 20) => {
   for (let i = 0; i < count; i++) {
     data.push({
       time: `2021-05-05 10:00:0${i}`,
-      cat: randomizer(100, 10),
-      dog: randomizer(100, 10),
-      fish: randomizer(100, 10),
+      cat: randomizer(10),
+      dog: randomizer(10),
+      fish: randomizer(10),
     });
   }
   return data;
