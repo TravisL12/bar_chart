@@ -19,7 +19,7 @@ function StackedBarChart({ data }) {
     const svg = d3.select(ref.current);
 
     // List of subgroups = header of the csv files = soil condition here
-    var subgroups = Object.keys(data[0]).slice(1);
+    const subgroups = Object.keys(data[0]).slice(1);
 
     // List of groups = species here = value of the first column called group -> I show them on the X axis
     const groups = data.map((d) => d.time);

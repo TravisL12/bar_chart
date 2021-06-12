@@ -9,8 +9,10 @@ function SingleBarChart({ data }) {
   const width = rectWidth * data.length + 100;
 
   const draw = useCallback(() => {
+    const svg = d3.select(ref.current);
+
     if (ref.current) {
-      d3.select(ref.current).selectAll('*').remove();
+      svg.selectAll('*').remove();
     }
 
     const xScale = d3
@@ -21,11 +23,9 @@ function SingleBarChart({ data }) {
 
     const yScale = d3.scaleLinear().domain([0, height]).range([height, 0]);
 
-    d3.select(ref.current)
-      .selectAll('rect')
+    const g = svg.selectAll('g').data(data).enter().append('g');
+    g.append('rect')
       .data(data)
-      .enter()
-      .append('rect')
       .attr('x', (_, i) => xScale(i))
       .attr('y', (d) => yScale(d))
       .attr('height', (d) => d)
@@ -33,6 +33,11 @@ function SingleBarChart({ data }) {
       .attr('stroke-width', 1)
       .attr('stroke', 'plum')
       .attr('fill', 'pink');
+
+    g.append('text')
+      .text((d) => d)
+      .attr('x', (_, i) => xScale(i))
+      .attr('y', 20);
   }, [data, height]);
 
   useEffect(() => {
