@@ -1,7 +1,8 @@
-import StackedBarChart from './Graph';
+import StackedBarChart from './StackedBarChart';
 import SingleBarChart from './SingleBarChart';
 import { getSingleData, getData } from './data';
 import { useState } from 'react';
+import Graph from './Graph';
 
 // https://www.d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
 
@@ -10,12 +11,8 @@ const App = () => {
 
   return (
     <div className="App">
-      <div>
-        <button onClick={() => setData(getSingleData())}>Update Data</button>
-      </div>
-
-      {/* <StackedBarChart data={data} /> */}
-      <SingleBarChart data={data} />
+      <Graph componentProp={StackedBarChart} getData={getData} />
+      <Graph componentProp={SingleBarChart} getData={getSingleData} />
     </div>
   );
 };
