@@ -11,12 +11,13 @@ function SingleBarChart({ data }) {
     d3.select(ref.current)
       .selectAll('rect')
       .data(data)
+      .enter()
+      .append('rect')
       .attr('x', (_, i) => i * rectWidth)
       .attr('y', (d) => maxHeight - d)
       .attr('height', (d) => d)
       .attr('width', rectWidth)
-      .attr('stroke-width', 3)
-      .attr('stroke-dasharray', '5 5')
+      .attr('stroke-width', 1)
       .attr('stroke', 'plum')
       .attr('fill', 'pink');
   }, [data]);
@@ -26,11 +27,7 @@ function SingleBarChart({ data }) {
   }, [data, draw]);
 
   return (
-    <svg width={rectWidth * data.length} height={maxHeight} ref={ref}>
-      {data.map((val, idx) => (
-        <rect key={`${val}-${idx}`} />
-      ))}
-    </svg>
+    <svg width={rectWidth * data.length} height={maxHeight} ref={ref}></svg>
   );
 }
 
