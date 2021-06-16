@@ -21,41 +21,40 @@ function SingleBarChart({ data }) {
       .selectAll("g")
       .data(data)
       .join(
-        (enter) =>
-          enter
-            .append("g")
-            .call((g) =>
-              g
-                .append("rect")
-                .attr("x", (_, i) => xScale(i))
-                .attr("y", (d) => yScale(d))
-                .attr("height", (d) => d)
-                .attr("width", rectWidth)
-                .attr("stroke-width", 1)
-                .attr("stroke", "plum")
-                .attr("fill", "pink")
-            )
-            .call((g) =>
-              g
-                .append("text")
-                .text((d) => d)
-                .join("text")
-                .attr("x", (_, i) => xScale(i))
-                .attr("y", (d) => yScale(d))
-                .attr("width", rectWidth)
-                .attr("dominant-baseline", "hanging")
-            ),
-        (update) =>
-          update.call((g) => {
-            g.select("rect")
-              .transition()
-              .attr("y", (d) => yScale(d))
-              .attr("height", (d) => d);
-            g.select("text")
-              .transition()
-              .text((d) => d)
-              .attr("y", (d) => yScale(d));
-          })
+        (enter) => {
+          const g = enter.append("g");
+
+          g.append("rect")
+            .attr("x", (_, i) => xScale(i))
+            .attr("y", (d) => yScale(d))
+            .attr("height", (d) => d)
+            .attr("width", rectWidth)
+            .attr("stroke-width", 1)
+            .attr("stroke", "plum")
+            .attr("fill", "pink");
+
+          g.append("text")
+            .text((d) => d)
+            .join("text")
+            .attr("x", (_, i) => xScale(i))
+            .attr("y", (d) => yScale(d))
+            .attr("width", rectWidth)
+            .attr("dominant-baseline", "hanging");
+
+          return g;
+        },
+        (update) => {
+          update
+            .select("rect")
+            .transition()
+            .attr("y", (d) => yScale(d))
+            .attr("height", (d) => d);
+          update
+            .select("text")
+            .transition()
+            .text((d) => d)
+            .attr("y", (d) => yScale(d));
+        }
       );
   };
 
