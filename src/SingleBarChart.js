@@ -1,20 +1,14 @@
 import * as d3 from 'd3';
-import React, { useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 
 const rectWidth = 30;
 
 function SingleBarChart({ data }) {
   const ref = useRef();
-  const height = useMemo(() => Math.max.apply(null, data), [data]);
+  const height = Math.max(Math.max.apply(null, data), 200);
   const width = rectWidth * data.length + 100;
 
-  const draw = useCallback(() => {
-    const svg = d3.select(ref.current);
-
-    if (ref.current) {
-      svg.selectAll('*').remove();
-    }
-
+  const draw = () => {
     const xScale = d3
       .scaleBand()
       .domain(Object.keys(data))
@@ -22,29 +16,48 @@ function SingleBarChart({ data }) {
       .padding(0.3);
 
     const yScale = d3.scaleLinear().domain([0, height]).range([height, 0]);
+    const svg = d3.select(ref.current);
 
-    const g = svg.selectAll('g').data(data).enter().append('g');
-    g.append('rect')
-      .data(data)
-      .attr('x', (_, i) => xScale(i))
-      .attr('y', (d) => yScale(d))
-      .attr('height', (d) => d)
-      .attr('width', rectWidth)
-      .attr('stroke-width', 1)
-      .attr('stroke', 'plum')
-      .attr('fill', 'pink');
+    svg
+      .selectAll('g')
+      .data(data, (d) => d)
+      .join((enter) => {
+        const g = enter.append('g');
 
-    g.append('text')
-      .text((d) => d)
-      .attr('x', (_, i) => xScale(i))
-      .attr('y', 20);
-  }, [data, height]);
+        // create bars
+        g.selectAll('rect')
+          .data(data)
+          .join('rect')
+          .attr('x', (_, i) => xScale(i))
+          .attr('y', (d) => yScale(d))
+          .attr('height', (d) => d)
+          .attr('width', rectWidth)
+          .attr('stroke-width', 1)
+          .attr('stroke', 'plum')
+          .attr('fill', 'pink');
+
+        // create labels
+        g.append('text')
+          .text((d) => d)
+          .join('text')
+          .attr('x', (_, i) => xScale(i))
+          .attr('y', (d) => yScale(d))
+          .attr('width', rectWidth)
+          .attr('dominant-baseline', 'hanging');
+
+        return g;
+      });
+  };
+
+  useEffect(() => {
+    d3.select(ref.current).attr('width', width).attr('height', height);
+  }, []);
 
   useEffect(() => {
     draw();
   }, [data, draw]);
 
-  return <svg width={width} height={height} ref={ref}></svg>;
+  return <svg ref={ref}></svg>;
 }
 
 export default SingleBarChart;

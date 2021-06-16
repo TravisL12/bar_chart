@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useCallback } from 'react';
 const mainWidth = 800;
 const mainHeight = 400;
 
-const margin = { top: 10, right: 30, bottom: 20, left: 50 };
+const margin = { top: 10, right: 30, bottom: 80, left: 50 };
 const width = mainWidth - margin.left - margin.right;
 const height = mainHeight - margin.top - margin.bottom;
 
@@ -12,11 +12,11 @@ function StackedBarChart({ data }) {
   const ref = useRef();
 
   const draw = useCallback(() => {
-    if (ref.current) {
-      d3.select(ref.current).selectAll('*').remove();
-    }
-
     const svg = d3.select(ref.current);
+
+    if (ref.current) {
+      svg.selectAll('*').remove();
+    }
 
     // List of subgroups = header of the csv files = soil condition here
     const subgroups = Object.keys(data[0]).slice(1);
@@ -29,7 +29,10 @@ function StackedBarChart({ data }) {
     svg
       .append('g')
       .attr('transform', `translate(${margin.left}, ${height})`)
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x))
+      .selectAll('text')
+      .text((d) => d.slice(11))
+      .attr('transform', 'translate(-13,26) rotate(-90)');
 
     // Add Y axis
     const y = d3.scaleLinear().domain([0, 60]).range([height, 0]);

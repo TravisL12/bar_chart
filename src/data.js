@@ -18,7 +18,7 @@ export const getData = (maxSize = 10, count = 20) => {
 export const getSingleData = (count = 20) => {
   const data = [];
   for (let i = 0; i < count; i++) {
-    data.push(randomizer(100, 10));
+    data.push(randomizer(100, 1));
   }
   return data;
 };
