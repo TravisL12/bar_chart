@@ -9,6 +9,7 @@ function SingleBarChart({ data }) {
   const width = rectWidth * data.length + 100;
 
   const draw = useCallback(() => {
+    const svg = d3.select(ref.current);
     const xScale = d3
       .scaleBand()
       .domain(Object.keys(data))
@@ -16,7 +17,6 @@ function SingleBarChart({ data }) {
       .padding(0.3);
 
     const yScale = d3.scaleLinear().domain([0, height]).range([height, 0]);
-    const svg = d3.select(ref.current);
     svg
       .selectAll('g')
       .data(data)
