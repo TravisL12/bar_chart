@@ -3,8 +3,6 @@ import SingleBarChart from "./SingleBarChart";
 import { getSingleData, getData } from "./data";
 import Graph from "./Graph";
 
-// https://www.d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
-
 const App = () => {
   return (
     <div className="App">
