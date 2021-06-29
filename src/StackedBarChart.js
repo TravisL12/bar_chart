@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import React, { useRef, useEffect, useCallback } from 'react';
+import * as d3 from "d3";
+import React, { useRef, useEffect, useCallback } from "react";
 
 const mainWidth = 800;
 const mainHeight = 400;
@@ -11,75 +11,83 @@ const height = mainHeight - margin.top - margin.bottom;
 function StackedBarChart({ data }) {
   const ref = useRef();
 
+  const subgroups = Object.keys(data[0]).slice(1);
+  const groups = data.map((d) => d.time);
+
+  const xAxis = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
+  const yAxis = d3.scaleLinear().domain([0, 60]).range([height, 0]);
+
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
-    if (ref.current) {
-      svg.selectAll('*').remove();
-    }
-
-    // List of subgroups = header of the csv files = soil condition here
-    const subgroups = Object.keys(data[0]).slice(1);
-
-    // List of groups = species here = value of the first column called group -> I show them on the X axis
-    const groups = data.map((d) => d.time);
-
-    // Add X axis
-    const x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
     svg
-      .append('g')
-      .attr('transform', `translate(${margin.left}, ${height})`)
-      .call(d3.axisBottom(x))
-      .selectAll('text')
+      .append("g")
+      .attr("transform", `translate(${margin.left}, ${height})`)
+      .call(d3.axisBottom(xAxis))
+      .selectAll("text")
       .text((d) => d.slice(11))
-      .attr('transform', 'translate(-13,26) rotate(-90)');
+      .attr("transform", "translate(-13,26) rotate(-90)");
 
-    // Add Y axis
-    const y = d3.scaleLinear().domain([0, 60]).range([height, 0]);
     svg
-      .append('g')
-      .attr('transform', `translate(${margin.left})`)
-      .call(d3.axisLeft(y));
+      .append("g")
+      .attr("transform", `translate(${margin.left})`)
+      .call(d3.axisLeft(yAxis));
 
     // color palette = one color per subgroup
     const color = d3
       .scaleOrdinal()
       .domain(subgroups)
-      .range(['pink', 'magenta', 'purple']);
+      .range(["pink", "magenta", "purple"]);
 
     //stack the data? --> stack per subgroup
     const stackedData = d3.stack().keys(subgroups)(data);
 
     // Show the bars
     svg
-      .append('g')
-      .selectAll('g')
+      .append("g")
+      .selectAll("g")
       // Enter in the stack data = loop key per key = group per group
       .data(stackedData)
-      .join('g')
-      .attr('fill', (d) => color(d.key))
-      .selectAll('rect')
-      // enter a second time = loop subgroup per subgroup to add all rectangles
-      .data((d) => d)
-      .join('rect')
-      .attr('x', (d) => x(d.data.time))
-      .attr('transform', `translate(${margin.left})`)
-      .attr('y', (d) => y(d[1]))
-      .attr('height', (d) => y(d[0]) - y(d[1]))
-      .attr('width', x.bandwidth());
+      .join((enter) => {
+        const g = enter.append("g");
+        g.attr("fill", (d) => color(d.key));
+
+        g.select("g")
+          .selectAll("rect")
+          .data(data, (d) => d)
+          .join((enterRect) => {
+            console.log(enterRect, "enterRect");
+            return enterRect
+              .append("rect")
+              .attr("x", (d) => xAxis(d.time))
+              .attr("transform", `translate(${margin.left})`)
+              .attr("y", (d) => yAxis(d[1]))
+              .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]))
+              .attr("width", xAxis.bandwidth());
+          });
+
+        return g;
+      });
+
+    // .selectAll("rect")
+    // // enter a second time = loop subgroup per subgroup to add all rectangles
+    // .data((d) => d)
+    // .join("rect")
+    // .attr("x", (d) => x(d.data.time))
+    // .attr("transform", `translate(${margin.left})`)
+    // .attr("y", (d) => y(d[1]))
+    // .attr("height", (d) => y(d[0]) - y(d[1]))
+    // .attr("width", x.bandwidth());
   }, [data]);
 
   useEffect(() => {
     d3.select(ref.current)
-      .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom);
     draw();
   }, [data, draw]);
 
-  return <svg width={mainWidth} height={mainHeight} ref={ref}></svg>;
+  return <svg ref={ref}></svg>;
 }
 
 export default StackedBarChart;

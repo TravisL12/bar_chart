@@ -64,7 +64,6 @@ function SingleBarChart({ data }) {
 
   useEffect(() => {
     draw();
-    return () => {};
   }, [data, draw]);
 
   return <svg ref={ref}></svg>;
