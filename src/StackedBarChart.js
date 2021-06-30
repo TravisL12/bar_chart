@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useCallback } from 'react';
 const mainWidth = 800;
 const mainHeight = 400;
 
-const margin = { top: 10, right: 30, bottom: 80, left: 50 };
+const margin = { top: 20, right: 30, bottom: 50, left: 50 };
 const width = mainWidth - margin.left - margin.right;
 const height = mainHeight - margin.top - margin.bottom;
 
@@ -19,8 +19,35 @@ function StackedBarChart({ data }) {
     .domain(subgroups)
     .range(['pink', 'magenta', 'purple']);
 
-  const xAxis = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
-  const yAxis = d3.scaleLinear().domain([0, 60]).range([height, 0]);
+  const xAxis = d3.scaleBand().range([0, width]).domain(groups).padding([0.2]);
+  const yAxis = d3.scaleLinear().rangeRound([height - margin.top, 0]);
+
+  const initialize = () => {
+    const svg = d3.select(ref.current);
+
+    // create main viewport
+    svg
+      .attr('width', mainWidth)
+      .attr('height', mainHeight)
+      .append('g')
+      .attr('class', 'stacks');
+
+    // create x-axis
+    svg
+      .append('g')
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(${margin.left}, ${height})`)
+      .call(d3.axisBottom(xAxis))
+      .selectAll('text')
+      .text((d) => d.slice(11))
+      .attr('transform', 'translate(-13,26) rotate(-90)');
+
+    // create y-axis
+    svg
+      .append('g')
+      .attr('class', 'y-axis')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+  };
 
   const updateBars = (selection) => {
     selection
@@ -35,7 +62,7 @@ function StackedBarChart({ data }) {
             .append('rect')
             .attr('class', 'bar')
             .attr('x', (d) => xAxis(d.data.time))
-            .attr('transform', `translate(${margin.left})`)
+            .attr('transform', `translate(${margin.left}, ${margin.top})`)
             .attr('y', (d) => yAxis(d[1]))
             .attr('height', (d) => yAxis(d[0]) - yAxis(d[1]))
             .attr('width', xAxis.bandwidth()),
@@ -51,19 +78,17 @@ function StackedBarChart({ data }) {
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
-    // update x-axis
-    svg
-      .select('.x-axis')
-      .call(d3.axisBottom(xAxis))
-      .selectAll('text')
-      .text((d) => d.slice(11))
-      .attr('transform', 'translate(-13,26) rotate(-90)');
+    // update x-axis (but x isn't dynamic so only do this once below)
+    // svg
+    //   .select('.x-axis')
+    //   .call(d3.axisBottom(xAxis))
+    //   .selectAll('text')
+    //   .text((d) => d.slice(11))
+    //   .attr('transform', 'translate(-13,26) rotate(-90)');
 
     // update y-axis
-    svg
-      .select('.y-axis')
-      .attr('transform', `translate(${margin.left})`)
-      .call(d3.axisLeft(yAxis));
+    yAxis.domain([0, d3.max(data, (d) => d3.sum(Object.values(d))) * 1.2]);
+    svg.select('.y-axis').transition().call(d3.axisLeft(yAxis));
 
     svg
       .selectAll('g.stacks')
@@ -92,27 +117,15 @@ function StackedBarChart({ data }) {
 
   // initialize graph
   useEffect(() => {
-    const svg = d3.select(ref.current);
-
-    svg
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('class', 'stacks');
-
-    // create x-axis
-    svg
-      .append('g')
-      .attr('class', 'x-axis')
-      .attr('transform', `translate(${margin.left}, ${height})`);
-
-    // create y-axis
-    svg.append('g').attr('class', 'y-axis');
-
+    initialize();
     draw();
   }, []);
 
-  return <svg ref={ref}></svg>;
+  return (
+    <div style={{ padding: '10px 0' }}>
+      <svg ref={ref}></svg>
+    </div>
+  );
 }
 
 export default StackedBarChart;
