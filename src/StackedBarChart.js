@@ -13,6 +13,11 @@ function StackedBarChart({ data }) {
 
   const subgroups = Object.keys(data[0]).slice(1);
   const groups = data.map((d) => d.time);
+  const stackedData = d3.stack().keys(subgroups)(data);
+  const color = d3
+    .scaleOrdinal()
+    .domain(subgroups)
+    .range(["pink", "magenta", "purple"]);
 
   const xAxis = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
   const yAxis = d3.scaleLinear().domain([0, 60]).range([height, 0]);
@@ -33,20 +38,9 @@ function StackedBarChart({ data }) {
       .attr("transform", `translate(${margin.left})`)
       .call(d3.axisLeft(yAxis));
 
-    // color palette = one color per subgroup
-    const color = d3
-      .scaleOrdinal()
-      .domain(subgroups)
-      .range(["pink", "magenta", "purple"]);
-
-    //stack the data? --> stack per subgroup
-    const stackedData = d3.stack().keys(subgroups)(data);
-
-    // Show the bars
     svg
       .append("g")
       .selectAll("g")
-      // Enter in the stack data = loop key per key = group per group
       .data(stackedData)
       .join((enter) => {
         const g = enter.append("g");
