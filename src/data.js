@@ -2,7 +2,7 @@ function randomizer(max = 1, min = 0) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
-export const getData = (maxSize = 10, count = 20) => {
+export const getData = (maxSize = 100, count = 25) => {
   const data = [];
   for (let i = 0; i < count; i++) {
     data.push({
@@ -10,6 +10,8 @@ export const getData = (maxSize = 10, count = 20) => {
       cat: randomizer(maxSize),
       dog: randomizer(maxSize),
       fish: randomizer(maxSize),
+      cow: randomizer(maxSize),
+      mouse: randomizer(maxSize),
     });
   }
   return data;

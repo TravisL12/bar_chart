@@ -1,12 +1,13 @@
 import * as d3 from 'd3';
 import React, { useRef, useEffect, useCallback } from 'react';
 
-const mainWidth = 800;
-const mainHeight = 400;
+const mainWidth = 1000;
+const mainHeight = 600;
 
 const margin = { top: 20, right: 30, bottom: 50, left: 50 };
 const width = mainWidth - margin.left - margin.right;
 const height = mainHeight - margin.top - margin.bottom;
+const sharedTranslate = `translate(${margin.left}, ${margin.top})`;
 
 function StackedBarChart({ data }) {
   const ref = useRef();
@@ -17,7 +18,7 @@ function StackedBarChart({ data }) {
   const color = d3
     .scaleOrdinal()
     .domain(subgroups)
-    .range(['pink', 'magenta', 'purple']);
+    .range(['pink', 'magenta', 'purple', 'green', 'lightblue']);
 
   const xAxis = d3.scaleBand().range([0, width]).domain(groups).padding([0.2]);
   const yAxis = d3.scaleLinear().rangeRound([height - margin.top, 0]);
@@ -43,10 +44,7 @@ function StackedBarChart({ data }) {
       .attr('transform', 'translate(-13,26) rotate(-90)');
 
     // create y-axis
-    svg
-      .append('g')
-      .attr('class', 'y-axis')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    svg.append('g').attr('class', 'y-axis').attr('transform', sharedTranslate);
   };
 
   const updateBars = (selection) => {
@@ -62,7 +60,7 @@ function StackedBarChart({ data }) {
             .append('rect')
             .attr('class', 'bar')
             .attr('x', (d) => xAxis(d.data.time))
-            .attr('transform', `translate(${margin.left}, ${margin.top})`)
+            .attr('transform', sharedTranslate)
             .attr('y', (d) => yAxis(d[1]))
             .attr('height', (d) => yAxis(d[0]) - yAxis(d[1]))
             .attr('width', xAxis.bandwidth()),
@@ -77,14 +75,6 @@ function StackedBarChart({ data }) {
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
-
-    // update x-axis (but x isn't dynamic so only do this once below)
-    // svg
-    //   .select('.x-axis')
-    //   .call(d3.axisBottom(xAxis))
-    //   .selectAll('text')
-    //   .text((d) => d.slice(11))
-    //   .attr('transform', 'translate(-13,26) rotate(-90)');
 
     // update y-axis
     yAxis.domain([0, d3.max(data, (d) => d3.sum(Object.values(d))) * 1.2]);
