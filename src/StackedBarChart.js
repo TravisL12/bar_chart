@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import React, { useRef, useEffect, useCallback } from 'react';
+import * as d3 from "d3";
+import React, { useRef, useEffect, useCallback } from "react";
 
 const mainWidth = 1000;
 const mainHeight = 600;
@@ -18,9 +18,9 @@ function StackedBarChart({ data }) {
   const color = d3
     .scaleOrdinal()
     .domain(subgroups)
-    .range(['pink', 'magenta', 'purple', 'green', 'lightblue']);
+    .range(["pink", "magenta", "purple", "green", "lightblue"]);
 
-  const xAxis = d3.scaleBand().range([0, width]).domain(groups).padding([0.2]);
+  const xAxis = d3.scaleBand().range([0, width]).padding([0.2]);
   const yAxis = d3.scaleLinear().rangeRound([height - margin.top, 0]);
 
   const initialize = () => {
@@ -28,28 +28,24 @@ function StackedBarChart({ data }) {
 
     // create main viewport
     svg
-      .attr('width', mainWidth)
-      .attr('height', mainHeight)
-      .append('g')
-      .attr('class', 'stacks');
+      .attr("width", mainWidth)
+      .attr("height", mainHeight)
+      .append("g")
+      .attr("class", "stacks");
 
     // create x-axis
     svg
-      .append('g')
-      .attr('class', 'x-axis')
-      .attr('transform', `translate(${margin.left}, ${height})`)
-      .call(d3.axisBottom(xAxis))
-      .selectAll('text')
-      .text((d) => d.slice(11))
-      .attr('transform', 'translate(-13,26) rotate(-90)');
+      .append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(${margin.left}, ${height})`);
 
     // create y-axis
-    svg.append('g').attr('class', 'y-axis').attr('transform', sharedTranslate);
+    svg.append("g").attr("class", "y-axis").attr("transform", sharedTranslate);
   };
 
   const updateBars = (selection) => {
     selection
-      .selectAll('rect')
+      .selectAll("rect")
       .data(
         (d) => d,
         (d) => d.data.time
@@ -57,18 +53,19 @@ function StackedBarChart({ data }) {
       .join(
         (enter) =>
           enter
-            .append('rect')
-            .attr('class', 'bar')
-            .attr('x', (d) => xAxis(d.data.time))
-            .attr('transform', sharedTranslate)
-            .attr('y', (d) => yAxis(d[1]))
-            .attr('height', (d) => yAxis(d[0]) - yAxis(d[1]))
-            .attr('width', xAxis.bandwidth()),
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", (d) => xAxis(d.data.time))
+            .attr("transform", sharedTranslate)
+            .attr("y", (d) => yAxis(d[1]))
+            .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]))
+            .attr("width", xAxis.bandwidth()),
         (update) => {
           update
             .transition()
-            .attr('y', (d) => yAxis(d[1]))
-            .attr('height', (d) => yAxis(d[0]) - yAxis(d[1]));
+            .attr("x", (d) => xAxis(d.data.time))
+            .attr("y", (d) => yAxis(d[1]))
+            .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]));
         }
       );
   };
@@ -77,26 +74,35 @@ function StackedBarChart({ data }) {
     const svg = d3.select(ref.current);
 
     // update y-axis
+    xAxis.domain(groups);
+    svg
+      .select(".x-axis")
+      .call(d3.axisBottom(xAxis))
+      .selectAll("text")
+      .text((d) => d.slice(11))
+      .attr("transform", "translate(-13,26) rotate(-90)");
+
+    // update y-axis
     yAxis.domain([0, d3.max(data, (d) => d3.sum(Object.values(d))) * 1.2]);
-    svg.select('.y-axis').transition().call(d3.axisLeft(yAxis));
+    svg.select(".y-axis").transition().call(d3.axisLeft(yAxis));
 
     svg
-      .selectAll('g.stacks')
-      .selectAll('g.stack')
+      .selectAll("g.stacks")
+      .selectAll("g.stack")
       .data(stackedData)
       .join(
         (enter) => {
-          const g = enter.append('g').attr('class', 'stack');
-          g.append('g')
-            .attr('class', 'bars')
-            .attr('fill', (d) => color(d.key));
+          const g = enter.append("g").attr("class", "stack");
+          g.append("g")
+            .attr("class", "bars")
+            .attr("fill", (d) => color(d.key));
 
-          updateBars(g.select('.bars'));
+          updateBars(g.select(".bars"));
 
           return g;
         },
         (update) => {
-          updateBars(update.select('.bars'));
+          updateBars(update.select(".bars"));
         }
       );
   }, [data]);
@@ -112,7 +118,7 @@ function StackedBarChart({ data }) {
   }, []);
 
   return (
-    <div style={{ padding: '10px 0' }}>
+    <div style={{ padding: "10px 0" }}>
       <svg ref={ref}></svg>
     </div>
   );

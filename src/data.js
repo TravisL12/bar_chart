@@ -2,8 +2,9 @@ function randomizer(max = 1, min = 0) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
-export const getData = (maxSize = 100, count = 25) => {
+export const getData = (maxSize = 100) => {
   const data = [];
+  const count = randomizer(25, 10);
   for (let i = 0; i < count; i++) {
     data.push({
       time: `2021-05-05 10:00:0${i}`,
