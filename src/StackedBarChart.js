@@ -55,17 +55,18 @@ function StackedBarChart({ data }) {
           enter
             .append("rect")
             .attr("class", "bar")
-            .attr("x", (d) => xAxis(d.data.time))
             .attr("transform", sharedTranslate)
-            .attr("y", (d) => yAxis(d[1]))
             .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]))
-            .attr("width", xAxis.bandwidth()),
+            .attr("width", xAxis.bandwidth())
+            .attr("x", (d) => xAxis(d.data.time))
+            .attr("y", (d) => yAxis(d[1])),
         (update) => {
           update
             .transition()
+            .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]))
+            .attr("width", xAxis.bandwidth())
             .attr("x", (d) => xAxis(d.data.time))
-            .attr("y", (d) => yAxis(d[1]))
-            .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]));
+            .attr("y", (d) => yAxis(d[1]));
         }
       );
   };
