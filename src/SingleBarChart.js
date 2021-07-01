@@ -17,10 +17,7 @@ function SingleBarChart({ data }) {
     .range([0, width])
     .padding(0.3);
 
-  const yScale = d3
-    .scaleLinear()
-    .range([height, 0])
-    .domain([0, d3.max(data) * 1.1]);
+  const yScale = d3.scaleLinear().range([height, 0]);
 
   const sortAscending = () => {
     data.sort((a, b) => d3.ascending(a, b));
@@ -50,7 +47,13 @@ function SingleBarChart({ data }) {
       .attr("transform", `translate(${margin.left}, ${height})`)
       .call(d3.axisBottom(xScale))
       .selectAll("text")
-      .text((d) => d);
+      .text((d) => +d + 1);
+
+    // create y-axis
+    svg
+      .append("g")
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${margin.left})`);
   };
 
   const textTransform = (d) => {
@@ -61,7 +64,8 @@ function SingleBarChart({ data }) {
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
-    // svg.select(".y-axis");
+    yScale.domain([0, d3.max(data) * 1.1]);
+    svg.select(".y-axis").transition().call(d3.axisLeft(yScale));
 
     svg
       .selectAll(".bars")
@@ -117,9 +121,13 @@ function SingleBarChart({ data }) {
 
   return (
     <div>
-      <button onClick={sortAscending}>asc</button>
-      <button onClick={sortDesc}>desc</button>
-      <svg ref={ref}></svg>
+      <div>
+        <button onClick={sortAscending}>asc</button>
+        <button onClick={sortDesc}>desc</button>
+      </div>
+      <div style={{ padding: "10px 0" }}>
+        <svg ref={ref}></svg>
+      </div>
     </div>
   );
 }
