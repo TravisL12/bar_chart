@@ -78,6 +78,7 @@ function SingleBarChart({ data }) {
             .attr("y", (d) => yScale(d))
             .attr("height", (d) => height - yScale(d))
             .attr("width", xScale.bandwidth());
+
           update
             .select("text")
             .transition()
@@ -85,6 +86,11 @@ function SingleBarChart({ data }) {
             .attr("x", (_, i) => xScale(i))
             .attr("y", (d) => yScale(d))
             .attr("transform", textTransform);
+        },
+        (exit) => {
+          exit.select("text").remove();
+          exit.select("rect").transition().style("opacity", 0);
+          exit.transition().remove();
         }
       );
   }, [data, height, width]);
