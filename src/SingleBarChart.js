@@ -21,7 +21,7 @@ function SingleBarChart({ data }) {
   const yScale = d3
     .scaleLinear()
     .range([height, 0])
-    .domain([0, d3.max(data)]);
+    .domain([0, d3.max(data) * 1.1]);
 
   const initialize = () => {
     const svg = d3.select(ref.current);
@@ -45,8 +45,9 @@ function SingleBarChart({ data }) {
   };
 
   const textTransform = (d) => {
-    const x = 5;
-    return d > 5 ? `translate(${x}, 15)` : `translate(${x}, -5)`;
+    return d > 10
+      ? `translate(${rectWidth / 2}, 15)`
+      : `translate(${rectWidth / 2}, -2)`;
   };
 
   const draw = useCallback(() => {
@@ -75,8 +76,8 @@ function SingleBarChart({ data }) {
             .join("text")
             .attr("x", (_, i) => xScale(i))
             .attr("y", (d) => yScale(d))
-            .attr("width", rectWidth)
-            .attr("transform", textTransform);
+            .attr("transform", textTransform)
+            .attr("text-anchor", "middle");
 
           return g;
         },
