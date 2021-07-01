@@ -46,10 +46,7 @@ function StackedBarChart({ data }) {
   const updateBars = (selection) => {
     selection
       .selectAll("rect")
-      .data(
-        (d) => d,
-        (d) => d.data.time
-      )
+      .data((d) => d)
       .join(
         (enter) =>
           enter
