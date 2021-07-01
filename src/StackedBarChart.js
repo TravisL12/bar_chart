@@ -2,12 +2,11 @@ import * as d3 from "d3";
 import React, { useRef, useEffect, useCallback } from "react";
 
 const mainWidth = 1000;
-const mainHeight = 600;
+const mainHeight = 400;
 
 const margin = { top: 20, right: 30, bottom: 50, left: 50 };
 const width = mainWidth - margin.left - margin.right;
 const height = mainHeight - margin.top - margin.bottom;
-const sharedTranslate = `translate(${margin.left}, ${margin.top})`;
 
 function StackedBarChart({ data }) {
   const ref = useRef();
@@ -20,8 +19,8 @@ function StackedBarChart({ data }) {
     .domain(subgroups)
     .range(["pink", "magenta", "purple", "green", "lightblue"]);
 
-  const xAxis = d3.scaleBand().range([0, width]).padding([0.2]);
-  const yAxis = d3.scaleLinear().rangeRound([height - margin.top, 0]);
+  const xScale = d3.scaleBand().range([0, width]).padding([0.2]);
+  const yScale = d3.scaleLinear().rangeRound([height, 0]);
 
   const initialize = () => {
     const svg = d3.select(ref.current);
@@ -31,7 +30,8 @@ function StackedBarChart({ data }) {
       .attr("width", mainWidth)
       .attr("height", mainHeight)
       .append("g")
-      .attr("class", "stacks");
+      .attr("class", "stacks")
+      .attr("transform", `translate(${margin.left})`);
 
     // create x-axis
     svg
@@ -40,7 +40,10 @@ function StackedBarChart({ data }) {
       .attr("transform", `translate(${margin.left}, ${height})`);
 
     // create y-axis
-    svg.append("g").attr("class", "y-axis").attr("transform", sharedTranslate);
+    svg
+      .append("g")
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${margin.left})`);
   };
 
   const updateBars = (selection) => {
@@ -52,11 +55,10 @@ function StackedBarChart({ data }) {
           enter
             .append("rect")
             .attr("class", "bar")
-            .attr("transform", sharedTranslate)
-            .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]))
-            .attr("width", xAxis.bandwidth())
-            .attr("x", (d) => xAxis(d.data.time))
-            .attr("y", (d) => yAxis(d[1]))
+            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+            .attr("width", xScale.bandwidth())
+            .attr("x", (d) => xScale(d.data.time))
+            .attr("y", (d) => yScale(d[1]))
             .style("opacity", 0)
             .call((enter) =>
               enter.transition().duration(500).style("opacity", 1)
@@ -64,10 +66,10 @@ function StackedBarChart({ data }) {
         (update) => {
           update
             .transition()
-            .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]))
-            .attr("width", xAxis.bandwidth())
-            .attr("x", (d) => xAxis(d.data.time))
-            .attr("y", (d) => yAxis(d[1]));
+            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+            .attr("width", xScale.bandwidth())
+            .attr("x", (d) => xScale(d.data.time))
+            .attr("y", (d) => yScale(d[1]));
         }
       );
   };
@@ -76,17 +78,17 @@ function StackedBarChart({ data }) {
     const svg = d3.select(ref.current);
 
     // update x-axis
-    xAxis.domain(groups);
+    xScale.domain(groups);
     svg
       .select(".x-axis")
-      .call(d3.axisBottom(xAxis))
+      .call(d3.axisBottom(xScale))
       .selectAll("text")
       .text((d) => d.slice(11))
       .attr("transform", "translate(-13,26) rotate(-90)");
 
     // update y-axis
-    yAxis.domain([0, d3.max(data, (d) => d3.sum(Object.values(d))) * 1.2]);
-    svg.select(".y-axis").transition().call(d3.axisLeft(yAxis));
+    yScale.domain([0, d3.max(data, (d) => d3.sum(Object.values(d))) * 1.2]);
+    svg.select(".y-axis").transition().call(d3.axisLeft(yScale));
 
     svg
       .selectAll("g.stacks")
