@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/bar_chart/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/bar_chart/static/js/main.a7be8322.chunk.js",
-    "main.js.map": "/bar_chart/static/js/main.a7be8322.chunk.js.map",
+    "main.js": "/bar_chart/static/js/main.fc779adb.chunk.js",
+    "main.js.map": "/bar_chart/static/js/main.fc779adb.chunk.js.map",
     "runtime-main.js": "/bar_chart/static/js/runtime-main.891d7e14.js",
     "runtime-main.js.map": "/bar_chart/static/js/runtime-main.891d7e14.js.map",
-    "static/js/2.c671f998.chunk.js": "/bar_chart/static/js/2.c671f998.chunk.js",
-    "static/js/2.c671f998.chunk.js.map": "/bar_chart/static/js/2.c671f998.chunk.js.map",
+    "static/js/2.097a4b24.chunk.js": "/bar_chart/static/js/2.097a4b24.chunk.js",
+    "static/js/2.097a4b24.chunk.js.map": "/bar_chart/static/js/2.097a4b24.chunk.js.map",
     "index.html": "/bar_chart/index.html",
     "static/css/main.6dea0f05.chunk.css.map": "/bar_chart/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.c671f998.chunk.js.LICENSE.txt": "/bar_chart/static/js/2.c671f998.chunk.js.LICENSE.txt"
+    "static/js/2.097a4b24.chunk.js.LICENSE.txt": "/bar_chart/static/js/2.097a4b24.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.891d7e14.js",
-    "static/js/2.c671f998.chunk.js",
+    "static/js/2.097a4b24.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.a7be8322.chunk.js"
+    "static/js/main.fc779adb.chunk.js"
   ]
 }
