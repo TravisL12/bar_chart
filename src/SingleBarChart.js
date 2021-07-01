@@ -1,7 +1,6 @@
 import * as d3 from "d3";
 import React, { useCallback, useRef, useEffect } from "react";
 
-const rectWidth = 30;
 const mainWidth = 1000;
 const mainHeight = 300;
 
@@ -22,6 +21,16 @@ function SingleBarChart({ data }) {
     .scaleLinear()
     .range([height, 0])
     .domain([0, d3.max(data) * 1.1]);
+
+  const sortAscending = () => {
+    data.sort((a, b) => d3.ascending(a, b));
+    draw();
+  };
+
+  const sortDesc = () => {
+    data.sort((a, b) => d3.descending(a, b));
+    draw();
+  };
 
   const initialize = () => {
     const svg = d3.select(ref.current);
@@ -46,8 +55,8 @@ function SingleBarChart({ data }) {
 
   const textTransform = (d) => {
     return d > 10
-      ? `translate(${rectWidth / 2}, 15)`
-      : `translate(${rectWidth / 2}, -2)`;
+      ? `translate(${xScale.bandwidth() / 2}, 15)`
+      : `translate(${xScale.bandwidth() / 2}, -2)`;
   };
 
   const draw = useCallback(() => {
@@ -66,7 +75,7 @@ function SingleBarChart({ data }) {
             .attr("x", (_, i) => xScale(i))
             .attr("y", (d) => yScale(d))
             .attr("height", (d) => height - yScale(d))
-            .attr("width", rectWidth)
+            .attr("width", xScale.bandwidth())
             .attr("stroke-width", 1)
             .attr("stroke", "black")
             .attr("fill", "pink");
@@ -106,7 +115,13 @@ function SingleBarChart({ data }) {
     draw();
   }, [data, draw]);
 
-  return <svg ref={ref}></svg>;
+  return (
+    <div>
+      <button onClick={sortAscending}>asc</button>
+      <button onClick={sortDesc}>desc</button>
+      <svg ref={ref}></svg>;
+    </div>
+  );
 }
 
 export default SingleBarChart;
