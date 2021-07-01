@@ -44,7 +44,7 @@ function StackedBarChart({ data }) {
       .data(stackedData)
       .join(
         (enter) => {
-          const g = enter.append("g").attr("class", "stack");
+          const g = enter.append("g").attr("class", (d) => `stack ${d.key}`);
 
           g.append("g")
             .attr("class", "bars")
@@ -73,10 +73,13 @@ function StackedBarChart({ data }) {
             .attr("width", xScale.bandwidth())
             .attr("x", (d) => xScale(d.data.time))
             .attr("y", (d) => yScale(d[1]))
+            .attr("stroke", "grey")
             .style("opacity", 0)
             .call((enter) =>
               enter.transition().duration(500).style("opacity", 1)
-            ),
+            )
+            .on("mouseover", mouseover)
+            .on("mouseleave", mouseleave),
         (update) => {
           update
             .transition()
@@ -86,6 +89,18 @@ function StackedBarChart({ data }) {
             .attr("y", (d) => yScale(d[1]));
         }
       );
+  };
+
+  const mouseover = function () {
+    const subgroupName = d3.select(this.parentNode).datum().key;
+    d3.select(ref.current).selectAll(".bar").style("opacity", 0.2);
+    d3.select(ref.current)
+      .selectAll(`.${subgroupName} rect`)
+      .style("opacity", 1);
+  };
+
+  const mouseleave = function () {
+    d3.select(ref.current).selectAll(".bar").style("opacity", 0.8);
   };
 
   // initialize graph
