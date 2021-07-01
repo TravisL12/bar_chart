@@ -119,7 +119,7 @@ function SingleBarChart({ data }) {
     <div>
       <button onClick={sortAscending}>asc</button>
       <button onClick={sortDesc}>desc</button>
-      <svg ref={ref}></svg>;
+      <svg ref={ref}></svg>
     </div>
   );
 }
