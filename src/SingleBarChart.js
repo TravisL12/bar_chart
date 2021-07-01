@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import React, { useCallback, useRef, useEffect } from 'react';
+import * as d3 from "d3";
+import React, { useCallback, useRef, useEffect } from "react";
 
 const rectWidth = 30;
 
@@ -8,63 +8,63 @@ function SingleBarChart({ data }) {
   const height = Math.max(Math.max.apply(null, data), 200);
   const width = rectWidth * data.length + 100;
 
+  const xScale = d3
+    .scaleBand()
+    .domain(Object.keys(data))
+    .range([0, width])
+    .padding(0.3);
+
+  const yScale = d3.scaleLinear().domain([0, height]).range([height, 0]);
+
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
-    const xScale = d3
-      .scaleBand()
-      .domain(Object.keys(data))
-      .range([0, width])
-      .padding(0.3);
-
-    const yScale = d3.scaleLinear().domain([0, height]).range([height, 0]);
     svg
-      .selectAll('g')
+      .selectAll("g")
       .data(data)
       .join(
         (enter) => {
-          const g = enter.append('g');
+          const g = enter.append("g");
 
-          g.append('rect')
-            .attr('x', (_, i) => xScale(i))
-            .attr('y', (d) => yScale(d))
-            .attr('height', (d) => d)
-            .attr('width', rectWidth)
-            .attr('stroke-width', 1)
-            .attr('stroke', 'plum')
-            .attr('fill', 'pink');
+          g.append("rect")
+            .attr("x", (_, i) => xScale(i))
+            .attr("y", (d) => yScale(d))
+            .attr("height", (d) => d)
+            .attr("width", rectWidth)
+            .attr("stroke-width", 1)
+            .attr("stroke", "plum")
+            .attr("fill", "pink");
 
-          g.append('text')
+          g.append("text")
             .text((d) => d)
-            .join('text')
-            .attr('x', (_, i) => xScale(i))
-            .attr('y', (d) => yScale(d))
-            .attr('width', rectWidth)
-            .attr('dominant-baseline', 'hanging');
+            .join("text")
+            .attr("x", (_, i) => xScale(i))
+            .attr("y", (d) => yScale(d))
+            .attr("width", rectWidth)
+            .attr("dominant-baseline", "hanging");
 
           return g;
         },
         (update) => {
           update
-            .select('rect')
+            .select("rect")
             .transition()
-            .attr('y', (d) => yScale(d))
-            .attr('height', (d) => d);
+            .attr("y", (d) => yScale(d))
+            .attr("height", (d) => d);
           update
-            .select('text')
+            .select("text")
             .transition()
             .text((d) => d)
-            .attr('y', (d) => yScale(d));
+            .attr("y", (d) => yScale(d));
         }
       );
   }, [data, height, width]);
 
   useEffect(() => {
-    d3.select(ref.current).attr('width', width).attr('height', height);
+    d3.select(ref.current).attr("width", width).attr("height", height);
   }, []);
 
   useEffect(() => {
     draw();
-    return () => {};
   }, [data, draw]);
 
   return <svg ref={ref}></svg>;

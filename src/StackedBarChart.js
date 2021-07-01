@@ -75,7 +75,7 @@ function StackedBarChart({ data }) {
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
-    // update y-axis
+    // update x-axis
     xAxis.domain(groups);
     svg
       .select(".x-axis")
