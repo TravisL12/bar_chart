@@ -56,7 +56,11 @@ function StackedBarChart({ data }) {
             .attr("height", (d) => yAxis(d[0]) - yAxis(d[1]))
             .attr("width", xAxis.bandwidth())
             .attr("x", (d) => xAxis(d.data.time))
-            .attr("y", (d) => yAxis(d[1])),
+            .attr("y", (d) => yAxis(d[1]))
+            .style("opacity", 0)
+            .call((enter) =>
+              enter.transition().duration(500).style("opacity", 1)
+            ),
         (update) => {
           update
             .transition()
@@ -91,6 +95,7 @@ function StackedBarChart({ data }) {
       .join(
         (enter) => {
           const g = enter.append("g").attr("class", "stack");
+
           g.append("g")
             .attr("class", "bars")
             .attr("fill", (d) => color(d.key));
