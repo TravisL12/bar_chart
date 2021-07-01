@@ -22,58 +22,6 @@ function StackedBarChart({ data }) {
   const xScale = d3.scaleBand().range([0, width]).padding([0.2]);
   const yScale = d3.scaleLinear().rangeRound([height, 0]);
 
-  const initialize = () => {
-    const svg = d3.select(ref.current);
-
-    // create main viewport
-    svg
-      .attr("width", mainWidth)
-      .attr("height", mainHeight)
-      .append("g")
-      .attr("class", "stacks")
-      .attr("transform", `translate(${margin.left})`);
-
-    // create x-axis
-    svg
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(${margin.left}, ${height})`);
-
-    // create y-axis
-    svg
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${margin.left})`);
-  };
-
-  const updateBars = (selection) => {
-    selection
-      .selectAll("rect")
-      .data((d) => d)
-      .join(
-        (enter) =>
-          enter
-            .append("rect")
-            .attr("class", "bar")
-            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
-            .attr("width", xScale.bandwidth())
-            .attr("x", (d) => xScale(d.data.time))
-            .attr("y", (d) => yScale(d[1]))
-            .style("opacity", 0)
-            .call((enter) =>
-              enter.transition().duration(500).style("opacity", 1)
-            ),
-        (update) => {
-          update
-            .transition()
-            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
-            .attr("width", xScale.bandwidth())
-            .attr("x", (d) => xScale(d.data.time))
-            .attr("y", (d) => yScale(d[1]));
-        }
-      );
-  };
-
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
@@ -112,15 +60,61 @@ function StackedBarChart({ data }) {
       );
   }, [data]);
 
-  useEffect(() => {
-    draw();
-  }, [data, draw]);
+  const updateBars = (selection) => {
+    selection
+      .selectAll("rect")
+      .data((d) => d)
+      .join(
+        (enter) =>
+          enter
+            .append("rect")
+            .attr("class", "bar")
+            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+            .attr("width", xScale.bandwidth())
+            .attr("x", (d) => xScale(d.data.time))
+            .attr("y", (d) => yScale(d[1]))
+            .style("opacity", 0)
+            .call((enter) =>
+              enter.transition().duration(500).style("opacity", 1)
+            ),
+        (update) => {
+          update
+            .transition()
+            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+            .attr("width", xScale.bandwidth())
+            .attr("x", (d) => xScale(d.data.time))
+            .attr("y", (d) => yScale(d[1]));
+        }
+      );
+  };
 
   // initialize graph
   useEffect(() => {
-    initialize();
-    draw();
+    const svg = d3.select(ref.current);
+    // create main viewport
+    svg
+      .attr("width", mainWidth)
+      .attr("height", mainHeight)
+      .append("g")
+      .attr("class", "stacks")
+      .attr("transform", `translate(${margin.left})`);
+
+    // create x-axis
+    svg
+      .append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(${margin.left}, ${height})`);
+
+    // create y-axis
+    svg
+      .append("g")
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${margin.left})`);
   }, []);
+
+  useEffect(() => {
+    draw();
+  }, [data, draw, ref.current]);
 
   return (
     <div style={{ padding: "10px 0" }}>

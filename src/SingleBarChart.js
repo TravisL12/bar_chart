@@ -11,12 +11,7 @@ const height = mainHeight - margin.top - margin.bottom;
 function SingleBarChart({ data }) {
   const ref = useRef();
 
-  const xScale = d3
-    .scaleBand()
-    .domain(Object.keys(data))
-    .range([0, width])
-    .padding(0.3);
-
+  const xScale = d3.scaleBand().range([0, width]).padding(0.3);
   const yScale = d3.scaleLinear().range([height, 0]);
 
   const sortAscending = () => {
@@ -29,33 +24,6 @@ function SingleBarChart({ data }) {
     draw();
   };
 
-  const initialize = () => {
-    const svg = d3.select(ref.current);
-
-    // create viewport
-    svg
-      .attr("width", mainWidth)
-      .attr("height", mainHeight)
-      .append("g")
-      .attr("class", "bars")
-      .attr("transform", `translate(${margin.left})`);
-
-    // create x-axis
-    svg
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(${margin.left}, ${height})`)
-      .call(d3.axisBottom(xScale))
-      .selectAll("text")
-      .text((d) => +d + 1);
-
-    // create y-axis
-    svg
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${margin.left})`);
-  };
-
   const textTransform = (d) => {
     return d > 10
       ? `translate(${xScale.bandwidth() / 2}, 15)`
@@ -64,6 +32,14 @@ function SingleBarChart({ data }) {
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
+
+    xScale.domain(Object.keys(data));
+    svg
+      .select(".x-axis")
+      .call(d3.axisBottom(xScale))
+      .selectAll("text")
+      .text((d) => +d + 1);
+
     yScale.domain([0, d3.max(data) * 1.1]);
     svg.select(".y-axis").transition().call(d3.axisLeft(yScale));
 
@@ -98,12 +74,15 @@ function SingleBarChart({ data }) {
           update
             .select("rect")
             .transition()
+            .attr("x", (_, i) => xScale(i))
             .attr("y", (d) => yScale(d))
-            .attr("height", (d) => height - yScale(d));
+            .attr("height", (d) => height - yScale(d))
+            .attr("width", xScale.bandwidth());
           update
             .select("text")
             .transition()
             .text((d) => d)
+            .attr("x", (_, i) => xScale(i))
             .attr("y", (d) => yScale(d))
             .attr("transform", textTransform);
         }
@@ -111,13 +90,32 @@ function SingleBarChart({ data }) {
   }, [data, height, width]);
 
   useEffect(() => {
-    initialize();
-    draw();
+    const svg = d3.select(ref.current);
+
+    // create viewport
+    svg
+      .attr("width", mainWidth)
+      .attr("height", mainHeight)
+      .append("g")
+      .attr("class", "bars")
+      .attr("transform", `translate(${margin.left})`);
+
+    // create x-axis
+    svg
+      .append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(${margin.left}, ${height})`);
+
+    // create y-axis
+    svg
+      .append("g")
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${margin.left})`);
   }, []);
 
   useEffect(() => {
     draw();
-  }, [data, draw]);
+  }, [data, draw, ref.current]);
 
   return (
     <div>
