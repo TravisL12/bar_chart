@@ -27,14 +27,16 @@ export const getSingleData = () => {
   return data;
 };
 
+const animals = ["cat", "dog", "fish", "cow", "mouse"];
 export const getScatterData = () => {
   const data = [];
   const count = randomizer(50, 10);
   for (let i = 0; i < count; i++) {
     data.push({
-      x: randomizer(100, 1),
-      y: randomizer(100, 1),
-      r: randomizer(10, 1),
+      x: randomizer(100, 5),
+      y: randomizer(100, 10),
+      r: randomizer(20, 10),
+      type: animals[i % animals.length],
     });
   }
   return data;

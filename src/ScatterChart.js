@@ -13,12 +13,16 @@ function ScatterChart({ data }) {
 
   const xScale = d3.scaleLinear().range([0, width]);
   const yScale = d3.scaleLinear().rangeRound([height, 0]);
+  const color = d3
+    .scaleOrdinal()
+    .domain(data.map((d) => d.type))
+    .range(["pink", "magenta", "purple", "green", "lightblue"]);
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
     // update x-axis
-    xScale.domain([0, d3.max(data, (d) => d.x) * 1.2]);
+    xScale.domain([0, d3.max(data, (d) => d.x)]);
     svg.select(".x-axis").call(d3.axisBottom(xScale));
 
     // update y-axis
@@ -34,10 +38,11 @@ function ScatterChart({ data }) {
           enter
             .append("circle")
             .attr("fill", "red")
+            .attr("stroke", "white")
             .attr("cx", (d) => xScale(d.x))
             .attr("cy", (d) => yScale(d.y))
             .attr("r", (d) => d.r)
-            .call((e) => e.transition().attr("fill", "orange"));
+            .call((e) => e.transition().attr("fill", (d) => color(d.type)));
           return enter;
         },
         (update) => {
@@ -54,7 +59,7 @@ function ScatterChart({ data }) {
                 .transition()
                 .duration(500)
                 .attr("stroke", "none")
-                .attr("fill", "orange")
+                .attr("fill", (d) => color(d.type))
             );
         },
         (exit) =>
