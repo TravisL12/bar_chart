@@ -45,11 +45,17 @@ function ScatterChart({ data }) {
             .attr("r", (d) => d.r)
             .call((e) => e.transition().attr("fill", (d) => color(d.type)))
             .on("mouseover", (e) => {
-              d3.select(e.target).attr("fill", "red");
+              d3.select(e.target)
+                .transition()
+                .style("opacity", 0.8)
+                .attr("r", 25);
             })
             .on("mouseleave", (e) => {
-              const el = e.target.__data__;
-              d3.select(e.target).attr("fill", color(el.type));
+              const data = e.target.__data__;
+              d3.select(e.target)
+                .transition()
+                .attr("fill", color(data.type))
+                .attr("r", data.r);
             });
           return enter;
         },
