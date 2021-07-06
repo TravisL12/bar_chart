@@ -1,7 +1,7 @@
 function randomizer(max = 1, min = 0) {
   return Math.round(Math.random() * (max - min) + min);
 }
-
+export const dataColors = ["pink", "magenta", "purple", "green", "lightblue"];
 export const getData = (maxSize = 100) => {
   const data = [];
   const count = randomizer(25, 10);

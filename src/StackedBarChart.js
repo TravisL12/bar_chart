@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import React, { useRef, useEffect, useCallback } from "react";
+import { dataColors } from "./data";
 
 const mainWidth = 1000;
 const mainHeight = 400;
@@ -14,10 +15,7 @@ function StackedBarChart({ data }) {
   const groups = data.map((d) => d.time);
   const subgroups = Object.keys(data[0]).slice(1);
   const stackedData = d3.stack().keys(subgroups)(data);
-  const color = d3
-    .scaleOrdinal()
-    .domain(subgroups)
-    .range(["pink", "magenta", "purple", "green", "lightblue"]);
+  const color = d3.scaleOrdinal().domain(subgroups).range(dataColors);
 
   const xScale = d3.scaleBand().range([0, width]).padding([0.2]);
   const yScale = d3.scaleLinear().rangeRound([height, 0]);

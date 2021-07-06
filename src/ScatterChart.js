@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import React, { useRef, useEffect, useCallback } from "react";
+import { dataColors } from "./data";
 
 const mainWidth = 1000;
 const mainHeight = 400;
@@ -16,7 +17,7 @@ function ScatterChart({ data }) {
   const color = d3
     .scaleOrdinal()
     .domain(data.map((d) => d.type))
-    .range(["pink", "magenta", "purple", "green", "lightblue"]);
+    .range(dataColors);
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
@@ -58,7 +59,7 @@ function ScatterChart({ data }) {
               u
                 .transition()
                 .duration(500)
-                .attr("stroke", "none")
+                .attr("stroke", "white")
                 .attr("fill", (d) => color(d.type))
             );
         },
