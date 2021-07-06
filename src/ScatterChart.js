@@ -43,7 +43,14 @@ function ScatterChart({ data }) {
             .attr("cx", (d) => xScale(d.x))
             .attr("cy", (d) => yScale(d.y))
             .attr("r", (d) => d.r)
-            .call((e) => e.transition().attr("fill", (d) => color(d.type)));
+            .call((e) => e.transition().attr("fill", (d) => color(d.type)))
+            .on("mouseover", (e) => {
+              d3.select(e.target).attr("fill", "red");
+            })
+            .on("mouseleave", (e) => {
+              const el = e.target.__data__;
+              d3.select(e.target).attr("fill", color(el.type));
+            });
           return enter;
         },
         (update) => {
