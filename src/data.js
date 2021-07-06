@@ -26,3 +26,16 @@ export const getSingleData = () => {
   }
   return data;
 };
+
+export const getScatterData = () => {
+  const data = [];
+  const count = randomizer(50, 10);
+  for (let i = 0; i < count; i++) {
+    data.push({
+      x: randomizer(100, 1),
+      y: randomizer(100, 1),
+      r: randomizer(10, 1),
+    });
+  }
+  return data;
+};
