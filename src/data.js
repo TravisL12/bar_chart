@@ -27,6 +27,18 @@ export const getSingleData = () => {
   return data;
 };
 
+export const getLineData = () => {
+  const data = [];
+  const count = 20;
+  let last = randomizer(100, 1);
+  for (let i = 0; i < count; i++) {
+    const next = last + randomizer(10, -10);
+    data.push({ x: i, y: next });
+    last = next;
+  }
+  return data;
+};
+
 const animals = ["cat", "dog", "fish", "cow", "mouse"];
 export const getScatterData = () => {
   const data = [];
