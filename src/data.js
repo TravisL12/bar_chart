@@ -1,6 +1,7 @@
 function randomizer(max = 1, min = 0) {
   return Math.round(Math.random() * (max - min) + min);
 }
+export const animals = ["cat", "dog", "fish", "cow", "mouse"];
 export const dataColors = ["pink", "magenta", "purple", "green", "lightblue"];
 export const getData = (maxSize = 100) => {
   const data = [];
@@ -28,18 +29,21 @@ export const getSingleData = () => {
 };
 
 export const getLineData = () => {
-  const data = [];
-  const count = 20;
-  let last = randomizer(100, 1);
-  for (let i = 0; i < count; i++) {
-    const next = last + randomizer(10, -10);
-    data.push({ x: i, y: next });
-    last = next;
-  }
+  const count = 5 * 1000;
+  const data = animals.map((animal) => {
+    const d = [];
+    let last = randomizer(100, 1);
+    for (let i = 0; i < count; i++) {
+      const next = last + randomizer(1, -1);
+      d.push({ x: i, y: next });
+      last = next;
+    }
+    return [animal, d];
+  });
+
   return data;
 };
 
-const animals = ["cat", "dog", "fish", "cow", "mouse"];
 export const getScatterData = () => {
   const data = [];
   const count = randomizer(50, 10);

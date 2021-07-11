@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import React, { useRef, useEffect, useCallback } from "react";
-import { dataColors } from "./data";
+import { animals, dataColors } from "./data";
 
 const mainWidth = 1000;
 const mainHeight = 400;
@@ -14,57 +14,55 @@ function LineChart({ data }) {
 
   const xScale = d3.scaleLinear().range([0, width]);
   const yScale = d3.scaleLinear().rangeRound([height, 0]);
-  const color = d3
-    .scaleOrdinal()
-    .domain(data.map((d) => d.type))
-    .range(dataColors);
+  const color = d3.scaleOrdinal().domain(animals).range(dataColors);
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
     // update x-axis
-    xScale.domain([0, d3.max(data, (d) => d.x)]);
+    xScale.domain([0, d3.max(data, (d) => d3.max(d[1], (d) => d.x))]);
     svg.select(".x-axis").call(d3.axisBottom(xScale));
 
     // update y-axis
-    yScale.domain(d3.extent(data, (d) => d.y));
+    yScale.domain(d3.extent(data.map(([_, d]) => d).flat(), (d) => d.y));
     svg.select(".y-axis").transition().call(d3.axisLeft(yScale));
 
     svg
       .selectAll(".lines")
-      .selectAll("path")
-      .data([data]) // <---- wrap data in array!!!!
+      .selectAll(".line")
+      .data(data, (d) => d[0]) // <---- wrap data in array!!!!
       .join(
         (enter) => {
-          return enter
+          const line = enter.append("g").attr("class", "line");
+
+          return line
             .append("path")
             .attr("fill", "none")
-            .attr("stroke-width", 4)
-            .attr("stroke", "pink")
-            .attr(
-              "d",
-              d3
+            .attr("stroke-width", 2)
+            .attr("stroke", (d) => color(d[0]))
+            .attr("d", (dPath) => {
+              return d3
                 .line()
                 .x((d) => xScale(d.x))
-                .y((d) => yScale(d.y))
-            );
+                .y((d) => yScale(d.y))(dPath[1]);
+            });
         },
         (update) => {
           update
+            .select("path")
             .transition()
             .attr("fill", "none")
-            .attr("stroke-width", 4)
-            .attr("stroke", "pink")
-            .attr(
-              "d",
-              d3
+            .attr("stroke-width", 2)
+            .attr("stroke", (d) => color(d[0]))
+            .attr("d", (dPath) => {
+              return d3
                 .line()
                 .x((d) => xScale(d.x))
-                .y((d) => yScale(d.y))
-            );
+                .y((d) => yScale(d.y))(dPath[1]);
+            });
         }
       );
-  }, [data]);
+  }, [data, xScale, yScale]);
 
   // initialize graph
   useEffect(() => {
@@ -92,7 +90,7 @@ function LineChart({ data }) {
 
   useEffect(() => {
     draw();
-  }, [data, draw, ref.current]);
+  }, [data, draw]);
 
   return (
     <div style={{ padding: "10px 0" }}>
