@@ -7,13 +7,14 @@ export const getData = (maxSize = 100) => {
   const data = [];
   const count = randomizer(25, 10);
   for (let i = 0; i < count; i++) {
+    const d = animals.reduce((acc, a) => {
+      acc[a] = randomizer(maxSize);
+      return acc;
+    }, {});
+
     data.push({
       time: `2021-05-05 10:00:0${i}`,
-      cat: randomizer(maxSize),
-      dog: randomizer(maxSize),
-      fish: randomizer(maxSize),
-      cow: randomizer(maxSize),
-      mouse: randomizer(maxSize),
+      ...d,
     });
   }
   return data;

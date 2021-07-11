@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import React, { useCallback, useRef, useEffect } from "react";
+import { dataColors } from "./data";
 
 const mainWidth = 1000;
 const mainHeight = 300;
@@ -58,7 +59,7 @@ function SingleBarChart({ data }) {
             .attr("width", xScale.bandwidth())
             .attr("stroke-width", 1)
             .attr("stroke", "black")
-            .attr("fill", "pink");
+            .attr("fill", dataColors[0]);
 
           g.append("text")
             .text((d) => d)
