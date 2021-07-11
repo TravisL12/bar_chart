@@ -1,8 +1,18 @@
 function randomizer(max = 1, min = 0) {
   return Math.round(Math.random() * (max - min) + min);
 }
-export const animals = ["cat", "dog", "fish", "cow", "mouse"];
-export const dataColors = ["pink", "magenta", "purple", "green", "lightblue"];
+
+const types = [
+  { type: "cat", color: "pink" },
+  { type: "dog", color: "magenta" },
+  { type: "fish", color: "purple" },
+  { type: "cow", color: "green" },
+  { type: "mouse", color: "lightblue" },
+];
+
+export const animals = types.map(({ type }) => type);
+export const dataColors = types.map(({ color }) => color);
+
 export const getData = (maxSize = 100) => {
   const data = [];
   const count = randomizer(25, 10);
