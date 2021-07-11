@@ -33,26 +33,28 @@ function LineChart({ data }) {
       .data(data, (d) => d[0]) // <---- wrap data in array!!!!
       .join(
         (enter) => {
-          const line = enter.append("g").attr("class", "line");
+          const line = enter.append("g").attr("class", (d) => `line ${d[0]}`);
 
           return line
             .append("path")
             .attr("fill", "none")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 5)
             .attr("stroke", (d) => color(d[0]))
             .attr("d", (dPath) => {
               return d3
                 .line()
                 .x((d) => xScale(d.x))
                 .y((d) => yScale(d.y))(dPath[1]);
-            });
+            })
+            .on("mouseover", mouseover)
+            .on("mouseleave", mouseleave);
         },
         (update) => {
           update
             .select("path")
             .transition()
             .attr("fill", "none")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 5)
             .attr("stroke", (d) => color(d[0]))
             .attr("d", (dPath) => {
               return d3
@@ -63,6 +65,16 @@ function LineChart({ data }) {
         }
       );
   }, [data, xScale, yScale]);
+
+  const mouseover = function () {
+    const subgroupName = d3.select(this.parentNode).datum()[0];
+    d3.select(ref.current).selectAll(".line").style("opacity", 0.2);
+    d3.select(ref.current).selectAll(`.${subgroupName}`).style("opacity", 1);
+  };
+
+  const mouseleave = function () {
+    d3.select(ref.current).selectAll(".line").style("opacity", 1);
+  };
 
   // initialize graph
   useEffect(() => {
