@@ -30,7 +30,7 @@ export const getSingleData = () => {
 };
 
 export const getLineData = () => {
-  const count = 5 * 1000;
+  const count = 1 * 1000;
   const data = animals.map((animal) => {
     const d = [];
     let last = randomizer(100, 1);
