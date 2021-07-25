@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import React, { useCallback, useRef, useEffect } from "react";
-import { dataColors } from "./data";
+import { dataColors } from "../data";
 
 const mainWidth = 1000;
 const mainHeight = 300;
