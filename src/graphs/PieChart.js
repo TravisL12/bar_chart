@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import { color } from "d3";
 import React, { useRef, useEffect, useCallback } from "react";
 import { dataColors } from "../data";
 
@@ -9,6 +8,7 @@ const mainHeight = 400;
 const margin = { top: 20, right: 30, bottom: 50, left: 50 };
 const width = mainWidth - margin.left - margin.right;
 const height = mainHeight - margin.top - margin.bottom;
+
 const radius = Math.min(width, height) / 2;
 
 function PieChart({ data }) {
@@ -22,13 +22,13 @@ function PieChart({ data }) {
     const pie = d3.pie().value(([_, value]) => {
       return value;
     });
-    const data_ready = pie(Object.entries(data));
+    const pieData = pie(Object.entries(data));
     const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
 
     svg
       .selectAll(".pie")
       .selectAll("path")
-      .data(data_ready)
+      .data(pieData)
       .enter()
       .append("path")
       .attr("d", arcGenerator)
@@ -41,7 +41,7 @@ function PieChart({ data }) {
     svg
       .selectAll(".pie")
       .selectAll("text")
-      .data(data_ready)
+      .data(pieData)
       .enter()
       .append("text")
       .text((d) => d.data[0])
@@ -52,8 +52,7 @@ function PieChart({ data }) {
 
   // initialize graph
   useEffect(() => {
-    const svg = d3.select(ref.current);
-    svg
+    d3.select(ref.current)
       .attr("width", mainWidth)
       .attr("height", mainHeight)
       .append("g")
