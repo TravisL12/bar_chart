@@ -1,4 +1,10 @@
-import { getSingleData, getData, getScatterData, getLineData } from "./data";
+import {
+  getSingleData,
+  getData,
+  getScatterData,
+  getLineData,
+  getPieData,
+} from "./data";
 import Graph from "./Graph";
 import StackedBarChart from "./graphs/StackedBarChart";
 import SingleBarChart from "./graphs/SingleBarChart";
@@ -11,7 +17,7 @@ import PieChart from "./graphs/PieChart";
 const App = () => {
   return (
     <div className="App">
-      <Graph componentProp={PieChart} getData={getLineData} />
+      <Graph componentProp={PieChart} getData={getPieData} />
       <Graph componentProp={LineChart} getData={getLineData} />
       <Graph componentProp={ScatterChart} getData={getScatterData} />
       <Graph componentProp={StackedBarChart} getData={getData} />

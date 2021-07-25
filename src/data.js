@@ -68,3 +68,10 @@ export const getScatterData = () => {
   }
   return data;
 };
+
+export const getPieData = () => {
+  return animals.reduce((acc, letter) => {
+    acc[letter] = randomizer(20, 3);
+    return acc;
+  }, {});
+};
