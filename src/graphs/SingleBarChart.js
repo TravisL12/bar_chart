@@ -25,11 +25,14 @@ function SingleBarChart({ data }) {
     draw();
   };
 
-  const textTransform = (d) => {
-    return d > 10
-      ? `translate(${xScale.bandwidth() / 2}, 15)`
-      : `translate(${xScale.bandwidth() / 2}, -2)`;
-  };
+  const textTransform = useCallback(
+    (d) => {
+      return d > 10
+        ? `translate(${xScale.bandwidth() / 2}, 15)`
+        : `translate(${xScale.bandwidth() / 2}, -2)`;
+    },
+    [xScale]
+  );
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
@@ -94,7 +97,7 @@ function SingleBarChart({ data }) {
           exit.transition().remove();
         }
       );
-  }, [data, height, width]);
+  }, [data, textTransform, xScale, yScale]);
 
   useEffect(() => {
     const svg = d3.select(ref.current);

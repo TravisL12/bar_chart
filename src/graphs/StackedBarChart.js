@@ -22,6 +22,40 @@ function StackedBarChart({ data }) {
   const xScale = d3.scaleBand().range([0, width]).padding([0.2]);
   const yScale = d3.scaleLinear().rangeRound([height, 0]);
 
+  const updateBars = useCallback(
+    (selection) => {
+      selection
+        .selectAll("rect")
+        .data((d) => d)
+        .join(
+          (enter) =>
+            enter
+              .append("rect")
+              .attr("class", "bar")
+              .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+              .attr("width", xScale.bandwidth())
+              .attr("x", (d) => xScale(d.data.time))
+              .attr("y", (d) => yScale(d[1]))
+              .attr("stroke", "grey")
+              .style("opacity", 0)
+              .call((enter) =>
+                enter.transition().duration(500).style("opacity", 1)
+              )
+              .on("mouseover", mouseover)
+              .on("mouseleave", mouseleave),
+          (update) => {
+            update
+              .transition()
+              .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+              .attr("width", xScale.bandwidth())
+              .attr("x", (d) => xScale(d.data.time))
+              .attr("y", (d) => yScale(d[1]));
+          }
+        );
+    },
+    [xScale, yScale]
+  );
+
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
@@ -58,38 +92,7 @@ function StackedBarChart({ data }) {
           updateBars(update.select(".bars"));
         }
       );
-  }, [data]);
-
-  const updateBars = (selection) => {
-    selection
-      .selectAll("rect")
-      .data((d) => d)
-      .join(
-        (enter) =>
-          enter
-            .append("rect")
-            .attr("class", "bar")
-            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
-            .attr("width", xScale.bandwidth())
-            .attr("x", (d) => xScale(d.data.time))
-            .attr("y", (d) => yScale(d[1]))
-            .attr("stroke", "grey")
-            .style("opacity", 0)
-            .call((enter) =>
-              enter.transition().duration(500).style("opacity", 1)
-            )
-            .on("mouseover", mouseover)
-            .on("mouseleave", mouseleave),
-        (update) => {
-          update
-            .transition()
-            .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
-            .attr("width", xScale.bandwidth())
-            .attr("x", (d) => xScale(d.data.time))
-            .attr("y", (d) => yScale(d[1]));
-        }
-      );
-  };
+  }, [data, color, groups, stackedData, updateBars, xScale, yScale]);
 
   const mouseover = function () {
     const subgroupName = d3.select(this.parentNode).datum().key;
