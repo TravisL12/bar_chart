@@ -129,7 +129,7 @@ function StackedBarChart({ data }) {
 
   useEffect(() => {
     draw();
-  }, [data, draw, ref.current]);
+  }, [data, draw]);
 
   return (
     <div style={{ padding: "10px 0" }}>

@@ -64,7 +64,7 @@ function LineChart({ data }) {
             });
         }
       );
-  }, [data, xScale, yScale]);
+  }, [data, xScale, yScale, color]);
 
   const mouseover = function () {
     const subgroupName = d3.select(this.parentNode).datum()[0];

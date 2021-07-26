@@ -65,7 +65,7 @@ function PieChart({ data }) {
             .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`);
         }
       );
-  }, [data]);
+  }, [data, pie, color]);
 
   // initialize graph
   useEffect(() => {
@@ -79,7 +79,7 @@ function PieChart({ data }) {
 
   useEffect(() => {
     draw();
-  }, [data, draw, ref.current]);
+  }, [data, draw]);
 
   return (
     <div style={{ padding: "10px 0" }}>

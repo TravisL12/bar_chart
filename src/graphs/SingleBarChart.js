@@ -122,7 +122,7 @@ function SingleBarChart({ data }) {
 
   useEffect(() => {
     draw();
-  }, [data, draw, ref.current]);
+  }, [data, draw]);
 
   return (
     <div>

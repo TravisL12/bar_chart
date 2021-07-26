@@ -85,7 +85,7 @@ function ScatterChart({ data }) {
             .attr("stroke", "black")
             .call((exit) => exit.style("opacity", 0).remove())
       );
-  }, [data]);
+  }, [data, color, xScale, yScale]);
 
   // initialize graph
   useEffect(() => {
@@ -113,7 +113,7 @@ function ScatterChart({ data }) {
 
   useEffect(() => {
     draw();
-  }, [data, draw, ref.current]);
+  }, [data, draw]);
 
   return (
     <div style={{ padding: "10px 0" }}>
