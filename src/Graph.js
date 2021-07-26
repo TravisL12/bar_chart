@@ -1,13 +1,23 @@
 import { useState } from "react";
+import styled from "styled-components";
 
-// https://www.d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 10px;
+  background: #f3f3f3;
+`;
 
 const Graph = ({ componentProp, getData }) => {
   const [data, setData] = useState(getData());
   const GraphComponent = componentProp;
 
   return (
-    <div>
+    <Wrapper>
+      <div>
+        <GraphComponent data={data} />
+      </div>
       <div>
         <button
           onClick={() => {
@@ -18,9 +28,7 @@ const Graph = ({ componentProp, getData }) => {
           Update Data
         </button>
       </div>
-
-      <GraphComponent data={data} />
-    </div>
+    </Wrapper>
   );
 };
 

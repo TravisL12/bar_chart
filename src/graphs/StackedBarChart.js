@@ -1,13 +1,13 @@
 import * as d3 from "d3";
 import React, { useRef, useEffect, useCallback } from "react";
 import { dataColors } from "../data";
+import {
+  MARGIN as margin,
+  MAIN_WIDTH as mainWidth,
+  MAIN_HEIGHT as mainHeight,
+} from "../constants";
 
 // https://www.d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
-
-const mainWidth = 1000;
-const mainHeight = 400;
-
-const margin = { top: 20, right: 30, bottom: 50, left: 50 };
 const width = mainWidth - margin.left - margin.right;
 const height = mainHeight - margin.top - margin.bottom;
 
@@ -134,11 +134,7 @@ function StackedBarChart({ data }) {
     draw();
   }, [data, draw]);
 
-  return (
-    <div style={{ padding: "10px 0" }}>
-      <svg ref={ref}></svg>
-    </div>
-  );
+  return <svg ref={ref}></svg>;
 }
 
 export default StackedBarChart;
