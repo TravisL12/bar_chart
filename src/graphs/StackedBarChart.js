@@ -2,6 +2,8 @@ import * as d3 from "d3";
 import React, { useRef, useEffect, useCallback } from "react";
 import { dataColors } from "../data";
 
+// https://www.d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+
 const mainWidth = 1000;
 const mainHeight = 400;
 

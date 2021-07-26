@@ -15,39 +15,56 @@ function PieChart({ data }) {
   const ref = useRef();
 
   const color = d3.scaleOrdinal().domain(Object.keys(data)).range(dataColors);
+  const pie = d3
+    .pie()
+    .value(({ value }) => {
+      return value;
+    })
+    // make sure order is constant and pieces don't flop around
+    .sort((a, b) => d3.ascending(a.key, b.key));
 
   const draw = useCallback(() => {
     const svg = d3.select(ref.current);
 
-    const pie = d3.pie().value(([_, value]) => {
-      return value;
-    });
-    const pieData = pie(Object.entries(data));
+    const pieData = pie(
+      Object.entries(data).map(([key, value]) => ({ key, value }))
+    );
     const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
 
     svg
       .selectAll(".pie")
-      .selectAll("path")
-      .data(pieData)
-      .enter()
-      .append("path")
-      .attr("d", arcGenerator)
-      .attr("fill", (d) => color(d.data[0]))
-      .attr("stroke", "black")
-      .style("stroke-width", "2px")
-      .style("opacity", 0.7);
+      .selectAll(".piece")
+      .data(pieData, (d) => d.data.key)
+      .join(
+        (enter) => {
+          const g = enter.append("g").attr("class", "piece");
 
-    // Now add the annotation. Use the centroid method to get the best coordinates
-    svg
-      .selectAll(".pie")
-      .selectAll("text")
-      .data(pieData)
-      .enter()
-      .append("text")
-      .text((d) => d.data[0])
-      .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`)
-      .style("text-anchor", "middle")
-      .style("font-size", 17);
+          g.append("path")
+            .attr("d", arcGenerator)
+            .attr("fill", (d) => color(d.data.key))
+            .attr("stroke", "black")
+            .style("stroke-width", "2px")
+            .style("opacity", 0.7);
+
+          // Now add the annotation. Use the centroid method to get the best coordinates
+          g.append("text")
+            .text((d) => d.data.key)
+            .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`)
+            .style("text-anchor", "middle")
+            .style("font-size", 17);
+
+          return g;
+        },
+        (update) => {
+          update.select("path").transition().attr("d", arcGenerator);
+
+          update
+            .select("text")
+            .transition()
+            .text((d) => d.data.key)
+            .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`);
+        }
+      );
   }, [data]);
 
   // initialize graph

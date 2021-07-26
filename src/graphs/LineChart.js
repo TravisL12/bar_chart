@@ -38,7 +38,7 @@ function LineChart({ data }) {
           return line
             .append("path")
             .attr("fill", "none")
-            .attr("stroke-width", 5)
+            .attr("stroke-width", 2)
             .attr("stroke", (d) => color(d[0]))
             .attr("d", (dPath) => {
               return d3
@@ -54,7 +54,7 @@ function LineChart({ data }) {
             .select("path")
             .transition()
             .attr("fill", "none")
-            .attr("stroke-width", 5)
+            .attr("stroke-width", 2)
             .attr("stroke", (d) => color(d[0]))
             .attr("d", (dPath) => {
               return d3
