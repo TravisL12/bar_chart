@@ -11,6 +11,12 @@ const height = mainHeight - margin.top - margin.bottom;
 
 const radius = Math.min(width, height) / 2;
 
+// https://stackoverflow.com/a/41958108
+const textRotate = (d) =>
+  d.endAngle < Math.PI
+    ? ((d.startAngle / 2 + d.endAngle / 2) * 180) / Math.PI
+    : ((d.startAngle / 2 + d.endAngle / 2 + Math.PI) * 180) / Math.PI;
+
 function PieChart({ data }) {
   const ref = useRef();
 
@@ -49,7 +55,13 @@ function PieChart({ data }) {
           // Now add the annotation. Use the centroid method to get the best coordinates
           g.append("text")
             .text((d) => d.data.key)
-            .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`)
+            .attr(
+              "transform",
+              (d) =>
+                `translate(${arcGenerator.centroid(
+                  d
+                )}) rotate(-90) rotate(${textRotate(d)})`
+            )
             .style("text-anchor", "middle")
             .style("font-size", 17);
 
@@ -62,7 +74,13 @@ function PieChart({ data }) {
             .select("text")
             .transition()
             .text((d) => d.data.key)
-            .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`);
+            .attr(
+              "transform",
+              (d) =>
+                `translate(${arcGenerator.centroid(
+                  d
+                )}) rotate(-90) rotate(${textRotate(d)})`
+            );
         }
       );
   }, [data, pie, color]);
