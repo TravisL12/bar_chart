@@ -108,26 +108,25 @@ function StackedBarChart({ data }) {
 
   // initialize graph
   useEffect(() => {
-    const svg = d3.select(ref.current);
     // create main viewport
-    svg
+    const main = d3
+      .select(ref.current)
       .attr("width", mainWidth)
       .attr("height", mainHeight)
       .append("g")
-      .attr("class", "stacks")
-      .attr("transform", `translate(${margin.left})`);
+      .attr("class", "main")
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    const stacks = main.append("g").attr("class", "stacks");
 
     // create x-axis
-    svg
+    stacks
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(${margin.left}, ${height})`);
+      .attr("transform", `translate(0, ${height})`);
 
     // create y-axis
-    svg
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${margin.left})`);
+    stacks.append("g").attr("class", "y-axis");
   }, []);
 
   useEffect(() => {

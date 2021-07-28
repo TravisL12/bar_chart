@@ -101,27 +101,25 @@ function SingleBarChart({ data }) {
   }, [data, textTransform, xScale, yScale]);
 
   useEffect(() => {
-    const svg = d3.select(ref.current);
-
     // create viewport
-    svg
+    const main = d3
+      .select(ref.current)
       .attr("width", mainWidth)
       .attr("height", mainHeight)
       .append("g")
-      .attr("class", "bars")
-      .attr("transform", `translate(${margin.left})`);
+      .attr("class", "main")
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    main.append("g").attr("class", "bars");
 
     // create x-axis
-    svg
+    main
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(${margin.left}, ${height})`);
+      .attr("transform", `translate(0, ${height})`);
 
     // create y-axis
-    svg
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${margin.left})`);
+    main.append("g").attr("class", "y-axis");
   }, []);
 
   useEffect(() => {

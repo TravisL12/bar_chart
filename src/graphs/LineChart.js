@@ -79,26 +79,24 @@ function LineChart({ data }) {
 
   // initialize graph
   useEffect(() => {
-    const svg = d3.select(ref.current);
-    // create main viewport
-    svg
+    // create viewport
+    const main = d3
+      .select(ref.current)
       .attr("width", mainWidth)
       .attr("height", mainHeight)
       .append("g")
-      .attr("class", "lines")
-      .attr("transform", `translate(${margin.left})`);
+      .attr("class", "main")
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    // create x-axis
-    svg
+    main.append("g").attr("class", "lines");
+
+    main
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(${margin.left}, ${height})`);
+      .attr("transform", `translate(0, ${height})`);
 
     // create y-axis
-    svg
-      .append("g")
-      .attr("class", "y-axis")
-      .attr("transform", `translate(${margin.left})`);
+    main.append("g").attr("class", "y-axis");
   }, []);
 
   useEffect(() => {
