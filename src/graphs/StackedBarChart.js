@@ -65,8 +65,7 @@ function StackedBarChart({ data }) {
       .select(".x-axis")
       .call(d3.axisBottom(xScale))
       .selectAll("text")
-      .text((d) => d.slice(11))
-      .attr("transform", "translate(-13,26) rotate(-90)");
+      .text((d) => d + 1);
 
     // update y-axis
     yScale.domain([0, d3.max(data, (d) => d3.sum(Object.values(d))) * 1.2]);

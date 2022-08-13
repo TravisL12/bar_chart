@@ -101,28 +101,6 @@ function SingleBarChart({ data }) {
   }, [data, textTransform, xScale, yScale]);
 
   useEffect(() => {
-    // create viewport
-    const main = d3
-      .select(ref.current)
-      .attr("width", mainWidth)
-      .attr("height", mainHeight)
-      .append("g")
-      .attr("class", "main")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-    main.append("g").attr("class", "bars");
-
-    // create x-axis
-    main
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(0, ${height})`);
-
-    // create y-axis
-    main.append("g").attr("class", "y-axis");
-  }, []);
-
-  useEffect(() => {
     draw();
   }, [data, draw]);
 
@@ -132,7 +110,16 @@ function SingleBarChart({ data }) {
         <button onClick={sortAscending}>asc</button>
         <button onClick={sortDesc}>desc</button>
       </div>
-      <svg ref={ref}></svg>
+      <svg ref={ref} width={mainWidth} height={mainHeight}>
+        <g
+          className="main"
+          transform={`translate(${margin.left}, ${margin.top})`}
+        >
+          <g className="bars" />
+          <g className="x-axis" transform={`translate(0, ${height})`} />
+          <g className="y-axis" />
+        </g>
+      </svg>
     </div>
   );
 }

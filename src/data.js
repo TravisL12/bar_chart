@@ -23,7 +23,7 @@ export const getData = (maxSize = 100) => {
     }, {});
 
     data.push({
-      time: `2021-05-05 10:00:0${i}`,
+      time: i,
       ...d,
     });
   }
