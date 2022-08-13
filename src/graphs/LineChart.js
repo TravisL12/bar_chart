@@ -77,33 +77,22 @@ function LineChart({ data }) {
     d3.select(ref.current).selectAll(".line").style("opacity", 1);
   };
 
-  // initialize graph
-  useEffect(() => {
-    // create viewport
-    const main = d3
-      .select(ref.current)
-      .attr("width", mainWidth)
-      .attr("height", mainHeight)
-      .append("g")
-      .attr("class", "main")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-    main.append("g").attr("class", "lines");
-
-    main
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(0, ${height})`);
-
-    // create y-axis
-    main.append("g").attr("class", "y-axis");
-  }, []);
-
   useEffect(() => {
     draw();
   }, [data, draw]);
 
-  return <svg ref={ref}></svg>;
+  return (
+    <svg ref={ref} width={mainWidth} height={mainHeight}>
+      <g
+        className="main"
+        transform={`translate(${margin.left}, ${margin.top})`}
+      >
+        <g className="lines" />
+        <g className="x-axis" transform={`translate(0, ${height})`} />
+        <g className="y-axis" />
+      </g>
+    </svg>
+  );
 }
 
 export default LineChart;

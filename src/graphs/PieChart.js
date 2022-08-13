@@ -86,21 +86,18 @@ function PieChart({ data }) {
       );
   }, [data, pie, color]);
 
-  // initialize graph
-  useEffect(() => {
-    d3.select(ref.current)
-      .attr("width", mainWidth)
-      .attr("height", mainHeight)
-      .append("g")
-      .attr("class", "pie")
-      .attr("transform", `translate(${mainWidth / 2}, ${mainHeight / 2})`);
-  }, []);
-
   useEffect(() => {
     draw();
   }, [data, draw]);
 
-  return <svg ref={ref}></svg>;
+  return (
+    <svg ref={ref} width={mainWidth} height={mainHeight}>
+      <g
+        className="pie"
+        transform={`translate(${mainWidth / 2}, ${mainHeight / 2})`}
+      />
+    </svg>
+  );
 }
 
 export default PieChart;

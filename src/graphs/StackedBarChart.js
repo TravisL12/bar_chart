@@ -105,34 +105,22 @@ function StackedBarChart({ data }) {
     d3.select(ref.current).selectAll(".bar").style("opacity", 0.8);
   };
 
-  // initialize graph
-  useEffect(() => {
-    // create main viewport
-    const main = d3
-      .select(ref.current)
-      .attr("width", mainWidth)
-      .attr("height", mainHeight)
-      .append("g")
-      .attr("class", "main")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-    const stacks = main.append("g").attr("class", "stacks");
-
-    // create x-axis
-    stacks
-      .append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(0, ${height})`);
-
-    // create y-axis
-    stacks.append("g").attr("class", "y-axis");
-  }, []);
-
   useEffect(() => {
     draw();
   }, [data, draw]);
 
-  return <svg ref={ref}></svg>;
+  return (
+    <svg ref={ref} width={mainWidth} height={mainHeight}>
+      <g
+        className="main"
+        transform={`translate(${margin.left}, ${margin.top})`}
+      >
+        <g className="stacks" />
+        <g className="x-axis" transform={`translate(0, ${height})`} />
+        <g className="y-axis" />
+      </g>
+    </svg>
+  );
 }
 
 export default StackedBarChart;
